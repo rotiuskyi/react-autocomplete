@@ -45,7 +45,7 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
   // TODO: use classnames util instead
   const popupBodyCss = [
     "popup__body",
-    open ? "popup__body--slide-down" : "popup__body--slide-up"
+    open ? "popup__body--slide-down" : ""
   ].join(" ");
 
   return (
