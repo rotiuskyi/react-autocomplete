@@ -3,7 +3,9 @@ import "./Autocomplete.css";
 
 export interface AutocompleteItem {
   id: string;
+  // TODO: add templte rendering instead of simple display text item
   displayText: string;
+  // TODO: add busy state indication
 }
 
 export interface AutoCompleteProps {
@@ -45,7 +47,7 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
     onSelect(itemToSelect);
   }, [filteredItems]);
 
-  // TODO: handle other keys, e.g. arrow keys (to navigate), esc (to close), clicking outside the component
+  // TODO: handle other keys, e.g. arrow keys (to navigate), esc (to close), clicking outside the component (to close)
   const handleKeyUp = useCallback((event: React.KeyboardEvent<HTMLLIElement>) => {
     if (event.key !== "Enter") {
       return;
