@@ -9,9 +9,10 @@ export interface AutocompleteItem {
 export interface AutoCompleteProps {
   items: AutocompleteItem[];
   onSelect(item: AutocompleteItem): void;
+  placeholder?: string;
 }
 
-function Autocomplete({ items, onSelect }: AutoCompleteProps) {
+function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
   const [searchText, setSearchText] = useState("");
   const [filteredItems, setFilteredItems] = useState(
     new Map(items.map(item => [item.id, item]))
@@ -49,7 +50,13 @@ function Autocomplete({ items, onSelect }: AutoCompleteProps) {
 
   return (
     <div className="autocomplete">
-      <input className="autocomplete__search" type="search" value={searchText} onChange={filterItems} />
+      <input
+        className="autocomplete__search"
+        type="search"
+        value={searchText}
+        onChange={filterItems}
+        placeholder={placeholder} />
+
       <div className="autocomplete__popup popup">
         <div className={popupBodyCss}>
           <ul>
@@ -57,7 +64,7 @@ function Autocomplete({ items, onSelect }: AutoCompleteProps) {
               <li>No results</li>
             )}
             {[...filteredItems.values()].map(item => (
-              <li className="" key={item.id} item-key={item.id} onClick={selectItem}>
+              <li key={item.id} item-key={item.id} onClick={selectItem}>
                 <div className="popup__item">{item.displayText}</div>
               </li>
             ))}

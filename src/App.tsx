@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="app">
       <h3>Autocomplete Example:</h3>
-      <Autocomplete items={autocompleteMock.cities} onSelect={setCity} />
+      <Autocomplete items={autocompleteMock.cities} onSelect={setCity} placeholder="Type 'l' to search" />
 
       <h5>Selected City: {city?.displayText || "-"}</h5>
     </div>
