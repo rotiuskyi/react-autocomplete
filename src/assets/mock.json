@@ -1,0 +1,24 @@
+{
+  "cities": [
+    {
+      "id": "ln0",
+      "displayText": "London"
+    },
+    {
+      "id": "kv1",
+      "displayText": "Kyiv"
+    },
+    {
+      "id": "ww2",
+      "displayText": "Warsaw"
+    },
+    {
+      "id": "lv3",
+      "displayText": "Lviv"
+    },
+    {
+      "id": "va4",
+      "displayText": "Vinnytsia"
+    }
+  ]
+}

@@ -3,49 +3,45 @@ import "./Autocomplete.css";
 
 export interface AutocompleteItem {
   id: string;
-  // TODO: add templte rendering instead of simple display text item
-  displayText: string;
-  // TODO: add busy state indication
+  displayText: string; // Add rendering function/component? (enhancement)
 }
 
 export interface AutoCompleteProps {
-  items: AutocompleteItem[];
+  items: Map<string, AutocompleteItem>;
+  selectedItem: AutocompleteItem | undefined; // multiselection? (enhancement)
+  onChange(value: string): void;
   onSelect(item: AutocompleteItem): void;
   placeholder?: string;
+  busy?: boolean;
 }
 
-function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
-  const [searchText, setSearchText] = useState("");
-  const [filteredItems, setFilteredItems] = useState(
-    new Map(items.map(item => [item.id, item]))
-  );
+// TODO: add removing the selection 
+function Autocomplete({
+  items,
+  selectedItem,
+  onChange,
+  onSelect,
+  placeholder,
+  busy,
+}: AutoCompleteProps) {
+  const [searchText, setSearchText] = useState(""); // TODO: add highlighting to matching items
   const [open, setOpen] = useState(false);
-
-  const filterItems = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-
     setSearchText(value);
-    setFilteredItems(new Map(items
-      .filter(item => item.displayText.toLocaleLowerCase().startsWith(value.toLocaleLowerCase()))
-      .map((item => [item.id, item]))
-    ));
     setOpen(true);
-  }, [items]);
-
-  // TODO: implement multiselection
-  const [selectedItem, setSelectedItem] = useState<AutocompleteItem>();
+    onChange(value);
+  }, []);
 
   const selectItem = useCallback((event: React.MouseEvent<HTMLLIElement>) => {
     const target = event.target as HTMLLIElement;
     const itemKey = target.getAttribute("item-key")!;
+    const itemToSelect = items.get(itemKey)!;
 
-    const itemToSelect = filteredItems.get(itemKey)!;
     setSearchText(itemToSelect.displayText);
     setOpen(false);
-    setSelectedItem(itemToSelect);
-
     onSelect(itemToSelect);
-  }, [filteredItems]);
+  }, [items]);
 
   // TODO: handle other keys, e.g. arrow keys (to navigate), esc (to close), clicking outside the component (to close)
   const handleKeyUp = useCallback((event: React.KeyboardEvent<HTMLLIElement>) => {
@@ -67,7 +63,7 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
         className="autocomplete__search"
         type="search"
         value={searchText}
-        onChange={filterItems}
+        onChange={handleChange}
         placeholder={placeholder}
         role="search"
         aria-autocomplete="list" />
@@ -75,10 +71,13 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
       <div className="autocomplete__popup popup">
         <div className={popupBodyCss}>
           <ul role="listbox">
-            {!filteredItems.size && (
+            {busy && (
+              <li>Loading...</li>
+            )}
+            {!busy && !items.size && (
               <li>No results</li>
             )}
-            {[...filteredItems.values()].map(item => (
+            {!busy && [...items.values()].map(item => (
               <li
                 key={item.id}
                 item-key={item.id}
