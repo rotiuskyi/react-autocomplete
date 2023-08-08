@@ -29,11 +29,12 @@
   transform: translateY(0);
 }
 
-.popup__body li:hover {
+.popup__body li:hover,
+.popup__body li:focus {
   background-color: lightskyblue;
 }
 
-.popup__item {
+.popup__textbox {
   padding: 4px;
   pointer-events: none;
 }

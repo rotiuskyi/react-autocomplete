@@ -30,6 +30,8 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
     setOpen(true);
   }, [items]);
 
+  // TODO: implement multiselection
+  const [selectedItem, setSelectedItem] = useState<AutocompleteItem>();
 
   const selectItem = useCallback((event: React.MouseEvent<HTMLLIElement>) => {
     const target = event.target as HTMLLIElement;
@@ -38,9 +40,18 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
     const itemToSelect = filteredItems.get(itemKey)!;
     setSearchText(itemToSelect.displayText);
     setOpen(false);
+    setSelectedItem(itemToSelect);
 
     onSelect(itemToSelect);
   }, [filteredItems]);
+
+  // TODO: handle other keys, e.g. arrow keys (to navigate), esc (to close), clicking outside the component
+  const handleKeyUp = useCallback((event: React.KeyboardEvent<HTMLLIElement>) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+    selectItem(event as unknown as React.MouseEvent<HTMLLIElement>);
+  }, [selectItem]);
 
   // TODO: use classnames util instead
   const popupBodyCss = [
@@ -55,17 +66,27 @@ function Autocomplete({ items, onSelect, placeholder }: AutoCompleteProps) {
         type="search"
         value={searchText}
         onChange={filterItems}
-        placeholder={placeholder} />
+        placeholder={placeholder}
+        role="search"
+        aria-autocomplete="list" />
 
       <div className="autocomplete__popup popup">
         <div className={popupBodyCss}>
-          <ul>
+          <ul role="listbox">
             {!filteredItems.size && (
               <li>No results</li>
             )}
             {[...filteredItems.values()].map(item => (
-              <li key={item.id} item-key={item.id} onClick={selectItem}>
-                <div className="popup__item">{item.displayText}</div>
+              <li
+                key={item.id}
+                item-key={item.id}
+                onClick={selectItem}
+                onKeyUp={handleKeyUp}
+                role="option"
+                tabIndex={0}
+                aria-selected={selectedItem?.id === item.id} >
+
+                <div className="popup__textbox">{item.displayText}</div>
               </li>
             ))}
           </ul>
