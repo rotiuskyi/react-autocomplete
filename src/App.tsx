@@ -1,17 +1,19 @@
 import { useCallback, useState } from "react";
 import Autocomplete, { AutocompleteItem } from "./Autocomplete";
+import debounce from "./util/debounce";
 import citiesMock from "./assets/mock.json";
 import "./App.css";
 
-const timeout = 500;
-// Emulate request to a REST API with a timeout (didn't find a good API)
-function searchCitiesAsync(query: string) {
+const fakeSearchTimeout = 500;
+const searchCitiesDebounceTimeout = 200;
+
+function searchCitiesFakeAPI(query: string) {
   return new Promise<AutocompleteItem[]>(resolve => {
     setTimeout(() => {
       resolve(citiesMock.cities.filter(city =>
         city.displayText.toLowerCase().startsWith(query.toLowerCase())
       ))
-    }, timeout);
+    }, fakeSearchTimeout);
   });
 }
 
@@ -20,15 +22,15 @@ function App() {
   const [city, setCity] = useState<AutocompleteItem>();
   const [fetchingCities, setFetchingCities] = useState(false);
 
-  const searchCities = useCallback((query: string) => {
+  const searchCities = useCallback(debounce(searchCitiesDebounceTimeout, (query: string) => {
     setFetchingCities(true);
-    searchCitiesAsync(query)
+    searchCitiesFakeAPI(query)
       .then(cities => new Map(cities.map(city => [city.id, city])))
       .then(setCities)
       .finally(() => {
         setFetchingCities(false);
       });
-  }, []);
+  }), []);
 
   return (
     <div className="app">
