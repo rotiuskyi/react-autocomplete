@@ -5,7 +5,7 @@ import citiesMock from "./assets/mock.json";
 import "./App.css";
 
 const fakeSearchTimeout = 750;
-const searchCitiesDebounceTimeout = 200;
+const searchCitiesDebounceTimeout = 375;
 
 function searchCitiesFakeAPI(query: string) {
   return new Promise<AutocompleteItem[]>(resolve => {
