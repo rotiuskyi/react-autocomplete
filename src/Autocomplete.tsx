@@ -1,21 +1,26 @@
 import { useCallback, useState } from "react";
-import "./Autocomplete.css";
+import "./Autocomplete.scss";
 
 export interface AutocompleteItem {
   id: string;
-  displayText: string; // Add rendering function/component? (enhancement)
+  displayText: string;
 }
 
 export interface AutoCompleteProps {
   items: Map<string, AutocompleteItem>;
-  selectedItem: AutocompleteItem | undefined; // multiselection? (enhancement)
+  selectedItem: AutocompleteItem | undefined;
   onChange(value: string): void;
   onSelect(item: AutocompleteItem): void;
   placeholder?: string;
   busy?: boolean;
 }
 
-// TODO: add removing the selection 
+/**
+ * TODO (enhancements):
+ * - add rendering property to customize list options (add icons, images, etc...)
+ * - implement multiselection, clear selection features
+ * - handle click and key events to open, close popup, navigate through list options
+ */
 function Autocomplete({
   items,
   selectedItem,
@@ -24,7 +29,7 @@ function Autocomplete({
   placeholder,
   busy,
 }: AutoCompleteProps) {
-  const [searchText, setSearchText] = useState(""); // TODO: add highlighting to matching items
+  const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -43,15 +48,16 @@ function Autocomplete({
     onSelect(itemToSelect);
   }, [items]);
 
-  // TODO: handle other keys, e.g. arrow keys (to navigate), esc (to close), clicking outside the component (to close)
   const handleKeyUp = useCallback((event: React.KeyboardEvent<HTMLLIElement>) => {
-    if (event.key !== "Enter") {
-      return;
+    switch (event.key) {
+      case "Enter":
+        selectItem(event as unknown as React.MouseEvent<HTMLLIElement>);
+        return;
+      default:
+        return
     }
-    selectItem(event as unknown as React.MouseEvent<HTMLLIElement>);
   }, [selectItem]);
 
-  // TODO: use classnames util instead
   const popupBodyCss = [
     "popup__body",
     open ? "popup__body--slide-down" : ""
@@ -72,10 +78,10 @@ function Autocomplete({
         <div className={popupBodyCss}>
           <ul role="listbox">
             {busy && (
-              <li>Loading...</li>
+              <li className="popup__text-item">Loading...</li>
             )}
             {!busy && !items.size && (
-              <li>No results</li>
+              <li className="popup__text-item">No results</li>
             )}
             {!busy && [...items.values()].map(item => (
               <li
@@ -87,7 +93,7 @@ function Autocomplete({
                 tabIndex={0}
                 aria-selected={selectedItem?.id === item.id} >
 
-                <div className="popup__textbox">{item.displayText}</div>
+                <div className="popup__text-item">{item.displayText}</div>
               </li>
             ))}
           </ul>
