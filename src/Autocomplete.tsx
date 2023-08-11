@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import Highlightify from "./components/Highlightify/Highlightify";
 import "./Autocomplete.scss";
 
 export interface AutocompleteItem {
@@ -53,6 +54,7 @@ function Autocomplete({
       case "Enter":
         selectItem(event as unknown as React.MouseEvent<HTMLLIElement>);
         return;
+      // TODO: handle other cases
       default:
         return
     }
@@ -93,7 +95,9 @@ function Autocomplete({
                 tabIndex={0}
                 aria-selected={selectedItem?.id === item.id} >
 
-                <div className="popup__text-item">{item.displayText}</div>
+                <div className="popup__text-item">
+                  <Highlightify fullText={item.displayText} highlightedText={searchText} />
+                </div>
               </li>
             ))}
           </ul>

@@ -15,7 +15,7 @@
         min-width: 150px;
         border-radius: 4px;
         border: 1px solid lightgrey;
-        background-color: lightcyan;
+        background-color: linen;
 
         will-change: transform;
         transform: translateY(-100%);
@@ -28,7 +28,7 @@
 
       ul>li:hover,
       ul>li:focus {
-        background-color: lightskyblue;
+        background-color: lightgrey;
       }
     }
 

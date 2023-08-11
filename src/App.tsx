@@ -4,7 +4,7 @@ import debounce from "./util/debounce";
 import citiesMock from "./assets/mock.json";
 import "./App.css";
 
-const fakeSearchTimeout = 500;
+const fakeSearchTimeout = 750;
 const searchCitiesDebounceTimeout = 200;
 
 function searchCitiesFakeAPI(query: string) {
