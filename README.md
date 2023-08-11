@@ -4,5 +4,5 @@ React-based basic autocomplete component
 ### Install dependencies:
 `npm install`
 
-### Start developing:
+### Start app:
 `npm run dev`
